@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}PostgreSQL | ЛР2 Облік ПММ{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <h1>PostgreSQL та Psycopg</h1>
+    <p>Сторінка показує прямі SQL-запити до PostgreSQL без ORM.</p>
+</section>
+
+<section class="panel">
+    <h2>Підключення</h2>
+    <table class="compact-table">
+        <tbody>
+            <tr>
+                <th>База даних</th>
+                <td>{{ postgres_info.database_name }}</td>
+            </tr>
+            <tr>
+                <th>Користувач</th>
+                <td>{{ postgres_info.user_name }}</td>
+            </tr>
+            <tr>
+                <th>Версія</th>
+                <td>{{ postgres_info.version }}</td>
+            </tr>
+            <tr>
+                <th>Позицій ПММ</th>
+                <td>{{ postgres_info.fuel_count }}</td>
+            </tr>
+            <tr>
+                <th>Операцій видачі</th>
+                <td>{{ postgres_info.issue_count }}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="panel table-panel">
+    <h2>SELECT + fetchmany</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ПММ</th>
+                <th>Тип</th>
+                <th>Залишок, л</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fuel in recent_fuels %}
+            <tr>
+                <td>{{ fuel.id }}</td>
+                <td>{{ fuel.name }}</td>
+                <td>{{ fuel.fuel_type }}</td>
+                <td>{{ fuel.quantity_liters }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <h2>INSERT, UPDATE, DELETE через Psycopg</h2>
+    {% if current_user %}
+    <form class="stack-form note-form" action="/postgres/notes" method="post">
+        <label>
+            Текст запису
+            <input type="text" name="text" maxlength="200" required>
+        </label>
+        <button class="primary-btn" type="submit">Додати запис</button>
+    </form>
+    {% else %}
+    <p>Для додавання, оновлення і видалення записів потрібно увійти.</p>
+    <a class="secondary-btn" href="/login">Увійти</a>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Текст</th>
+                <th>Стан</th>
+                <th>Створено</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for note in notes %}
+            <tr>
+                <td>{{ note.id }}</td>
+                <td>{{ note.text }}</td>
+                <td>{% if note.is_done %}виконано{% else %}новий{% endif %}</td>
+                <td>{{ note.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+                <td class="actions">
+                    {% if current_user %}
+                    <form action="/postgres/notes/{{ note.id }}/done" method="post">
+                        <button class="secondary-btn" type="submit">Оновити</button>
+                    </form>
+                    <form action="/postgres/notes/{{ note.id }}/delete" method="post">
+                        <button class="link-danger" type="submit">Видалити</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

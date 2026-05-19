@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Головна | ЛР2 Облік ПММ{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <h1>Лабораторна робота 2</h1>
+    <p>Предметна галузь: інформаційна система обліку пально-мастильних матеріалів.</p>
+</section>
+
+<section class="panel">
+    <h2>Вимоги з методичних вказівок</h2>
+    <table class="compact-table">
+        <tbody>
+            <tr>
+                <th>Серверний HTML</th>
+                <td>Сторінки повертаються через Jinja2 Templates та HTMLResponse.</td>
+            </tr>
+            <tr>
+                <th>Реляційна БД</th>
+                <td>PostgreSQL: база даних <code>fuel_accounting</code>.</td>
+            </tr>
+            <tr>
+                <th>Сутності</th>
+                <td>User, FuelType, FuelItem, IssueRecord.</td>
+            </tr>
+            <tr>
+                <th>ORM</th>
+                <td>Основний застосунок працює через SQLAlchemy ORM з PostgreSQL.</td>
+            </tr>
+            <tr>
+                <th>Psycopg</th>
+                <td>Сторінка <a href="/postgres">/postgres</a> показує підключення, SELECT, INSERT, UPDATE і DELETE через Psycopg.</td>
+            </tr>
+            <tr>
+                <th>Ролі</th>
+                <td>admin керує ПММ, user оформлює видачу.</td>
+            </tr>
+            <tr>
+                <th>CRUD</th>
+                <td>Для FuelItem реалізовано створення, перегляд, редагування та видалення.</td>
+            </tr>
+            <tr>
+                <th>OpenAPI</th>
+                <td>Документація змінена і доступна за адресою <a href="/docs/fuel">/docs/fuel</a>.</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <h2>Перевірка ролей</h2>
+    <p>Демо-акаунти: <strong>admin / admin123</strong>, <strong>operator / user123</strong>.</p>
+    <div class="actions">
+        <a class="primary-btn" href="/login">Увійти</a>
+        <a class="secondary-btn" href="/fuels">Склад ПММ</a>
+        <a class="secondary-btn" href="/fuel-types">Типи ПММ</a>
+        {% if current_user %}
+        <a class="secondary-btn" href="/issues">Журнал операцій</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="panel">
+    <h2>Поточні дані з БД</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ПММ</th>
+                <th>Тип</th>
+                <th>Залишок, л</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fuel in fuels %}
+            <tr>
+                <td>{{ fuel.id }}</td>
+                <td>{{ fuel.name }}</td>
+                <td>{{ fuel.fuel_type.name }}</td>
+                <td>{{ fuel.quantity_liters }}</td>
+                <td><a href="/fuels/{{ fuel.id }}">Відкрити</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

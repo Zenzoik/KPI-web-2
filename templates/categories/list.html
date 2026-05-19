@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Типи ПММ | ЛР2 Облік ПММ{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Типи пально-мастильних матеріалів</h1>
+        <p>Сутність FuelType. Кожен тип пов'язаний з позиціями ПММ через SQLAlchemy relationship.</p>
+    </div>
+</section>
+
+<section class="panel table-panel">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Опис</th>
+                <th>Позицій на складі</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for fuel_type in fuel_types %}
+            <tr>
+                <td>{{ fuel_type.id }}</td>
+                <td>{{ fuel_type.name }}</td>
+                <td>{{ fuel_type.description }}</td>
+                <td>{{ fuel_type.fuels|length }}</td>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

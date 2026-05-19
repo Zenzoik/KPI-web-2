@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Операції | ЛР2 Облік ПММ{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>{% if current_user.role == "admin" %}Усі операції видачі{% else %}Мої операції видачі{% endif %}</h1>
+        <p>Сутність IssueRecord. Запис створюється після видачі ПММ зі сторінки конкретної позиції.</p>
+    </div>
+</section>
+
+<section class="panel table-panel">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ПММ</th>
+                <th>Обсяг, л</th>
+                <th>Куди видано</th>
+                <th>Дата операції</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in issues %}
+            <tr>
+                <td>{{ issue.id }}</td>
+                <td>{{ issue.fuel_item.name }}</td>
+                <td>{{ issue.amount_liters }}</td>
+                <td>{{ issue.destination }}</td>
+                <td>{{ issue.issued_at.strftime("%Y-%m-%d %H:%M") }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

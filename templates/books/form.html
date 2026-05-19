@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Форма ПММ | ЛР2 Облік ПММ{% endblock %}
+
+{% block content %}
+<section class="form-wrapper">
+    <div class="panel">
+        <h1>{{ submit_label }}</h1>
+        <form class="stack-form" action="{{ form_action }}" method="post">
+            <label>
+                Найменування
+                <input type="text" name="name" value="{{ fuel.name if fuel else '' }}" required>
+            </label>
+            <label>
+                Постачальник
+                <input type="text" name="supplier" value="{{ fuel.supplier if fuel else '' }}" required>
+            </label>
+            <label>
+                Залишок, літри
+                <input type="number" name="quantity_liters" min="0" max="999999" value="{{ fuel.quantity_liters if fuel else 0 }}" required>
+            </label>
+            <label>
+                Ціна за літр, грн
+                <input type="number" name="unit_price" min="0" max="100000" value="{{ fuel.unit_price if fuel else 0 }}" required>
+            </label>
+            <label>
+                Тип ПММ
+                <select name="fuel_type_id" required>
+                    {% for fuel_type in fuel_types %}
+                    <option value="{{ fuel_type.id }}" {% if fuel and fuel.fuel_type_id == fuel_type.id %}selected{% endif %}>{{ fuel_type.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                Опис
+                <textarea name="description" rows="5">{{ fuel.description if fuel else '' }}</textarea>
+            </label>
+            <button type="submit" class="primary-btn">{{ submit_label }}</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

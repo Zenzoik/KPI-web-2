@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}ПММ | ЛР2 Облік ПММ{% endblock %}
+
+{% block content %}
+<section class="page-head with-action">
+    <div>
+        <h1>Складські позиції ПММ</h1>
+        <p>Сутність FuelItem. Тут видно читання даних, а для адміністратора також створення, редагування і видалення.</p>
+    </div>
+    {% if current_user and current_user.role == "admin" %}
+    <a class="primary-btn compact-btn" href="/admin/fuels/new">Додати позицію</a>
+    {% endif %}
+</section>
+
+<section class="panel table-panel">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Найменування</th>
+                <th>Постачальник</th>
+                <th>Тип ПММ</th>
+                <th>Залишок, л</th>
+                <th>Ціна за л, грн</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fuel in fuels %}
+            <tr>
+                <td>{{ fuel.id }}</td>
+                <td>{{ fuel.name }}</td>
+                <td>{{ fuel.supplier }}</td>
+                <td>{{ fuel.fuel_type.name }}</td>
+                <td>{{ fuel.quantity_liters }}</td>
+                <td>{{ fuel.unit_price }}</td>
+                <td class="actions">
+                    <a href="/fuels/{{ fuel.id }}">Перегляд</a>
+                    {% if current_user and current_user.role == "admin" %}
+                    <a href="/admin/fuels/{{ fuel.id }}/edit">Редагувати</a>
+                    <form action="/admin/fuels/{{ fuel.id }}/delete" method="post">
+                        <button type="submit" class="link-danger">Видалити</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

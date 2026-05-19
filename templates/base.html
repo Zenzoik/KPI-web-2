@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ЛР2 Облік ПММ{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="brand">
+            <a href="/">ЛР2: Облік ПММ</a>
+            <p>FastAPI + SQLAlchemy + PostgreSQL</p>
+        </div>
+        <nav class="nav-links">
+            <a href="/">Головна</a>
+            <a href="/fuels">ПММ</a>
+            <a href="/fuel-types">Типи ПММ</a>
+            <a href="/postgres">PostgreSQL</a>
+            {% if current_user %}
+            <a href="/issues">Операції</a>
+            {% endif %}
+            <a href="/docs/fuel">OpenAPI</a>
+        </nav>
+        <div class="auth-box">
+            {% if current_user %}
+            <span>{{ current_user.full_name }}: {{ current_user.role }}</span>
+            <form action="/logout" method="post">
+                <button type="submit" class="secondary-btn">Вийти</button>
+            </form>
+            {% else %}
+            <a class="primary-btn" href="/login">Увійти</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="page">
+        {% if flash_message %}
+        <section class="flash">{{ flash_message }}</section>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
