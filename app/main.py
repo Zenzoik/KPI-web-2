@@ -3,7 +3,6 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Form, HTTPException, Request, Response, status
-from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -116,40 +115,9 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(
-    title="Fuel Accounting System",
-    description="RESTful application for accounting fuel and lubricants with server-rendered HTML.",
-    version="2.0.0",
-    docs_url="/docs/fuel",
-    redoc_url="/docs/reference",
-    openapi_url="/api/openapi.json",
-    swagger_ui_parameters={"defaultModelsExpandDepth": -1, "docExpansion": "list"},
-    lifespan=lifespan,
-)
+app = FastAPI(title="Облік ПММ", version="2.0.0", lifespan=lifespan)
 app.add_middleware(SessionMiddleware, secret_key="change-this-secret-in-production")
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
-    schema = get_openapi(
-        title="Fuel Accounting API",
-        version="2.0.0",
-        description=(
-            "API for an information system 'Fuel and Lubricants Accounting'. "
-            "The browser interface is rendered on the server and returned as HTML."
-        ),
-        routes=app.routes,
-    )
-    schema["info"]["contact"] = {"name": "KPI Lab Demo"}
-    schema["info"]["x-logo"] = {"url": "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png"}
-    schema["servers"] = [{"url": "http://127.0.0.1:8000", "description": "Local server"}]
-    app.openapi_schema = schema
-    return app.openapi_schema
-
-
-app.openapi = custom_openapi
 
 
 def template_context(request: Request, db: Session, **context):

@@ -37,20 +37,6 @@ def get_current_user_from_session(request: Request, db: Session = Depends(get_db
     return db.query(User).filter(User.id == user_id).first()
 
 
-def require_logged_user(request: Request, db: Session = Depends(get_db)) -> User:
-    user = get_current_user_from_session(request, db)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Необхідно увійти в систему")
-    return user
-
-
-def require_admin(request: Request, db: Session = Depends(get_db)) -> User:
-    user = get_current_user_from_session(request, db)
-    if not user or user.role != "admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Доступ лише для адміністратора")
-    return user
-
-
 def get_api_user(
     credentials: Annotated[HTTPBasicCredentials, Depends(security)],
     db: Session = Depends(get_db),
